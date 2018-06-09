@@ -18,7 +18,7 @@ class visitante
     private $id_comuna_visitante;
 
     public function __construct($arg_run_visitante="", $arg_dv_visitante="", $arg_nombres_visitante="", 
-                                $arg_id_genero_visitante="", $arg_id_estado_civil_visitante="" $arg_appaterno_visitante="",
+                                $arg_id_genero_visitante="", $arg_id_estado_civil_visitante="", $arg_appaterno_visitante="",
                                 $arg_apmaterno_visitante="", $arg_fecha_nacimiento_visitante="", $arg_correo_visitante="",
                                 $arg_fono_contacto_visitante="", $arg_direccion_visitante="",$arg_id_region_visitante="",
                                 $arg_id_provincia_visitante="", $arg_id_comuna_visitante="") 
