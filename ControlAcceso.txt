@@ -1,0 +1,849 @@
+CREATE DATABASE CONTROLDEACCESO;
+
+USE CONTROLDEACCESO;
+
+CREATE TABLE pais(
+id_pais INT NOT NULL AUTO_INCREMENT,
+descripcion_pais VARCHAR(100) NOT NULL,
+activo_pais INT NOT NULL,
+PRIMARY KEY (id_region))
+ENGINE=InnoDB;
+
+CREATE TABLE genero(
+id_genero INT NOT NULL AUTO_INCREMENT,
+descripcion_genero VARCHAR(100) NOT NULL,
+activo_genero INT NOT NULL,
+PRIMARY KEY (id_genero))
+ENGINE=InnoDB;
+
+CREATE TABLE estado_civil(
+id_estado_civil INT NOT NULL AUTO_INCREMENT,
+descripcion_estado_civil VARCHAR(100) NOT NULL,
+activo_estado_civil INT NOT NULL,
+PRIMARY KEY (id_estado_civil))
+ENGINE=InnoDB;
+
+CREATE TABLE cargo(
+id_cargo INT NOT NULL AUTO_INCREMENT,
+descripcion_cargo VARCHAR(100) NOT NULL,
+activo_cargo INT NOT NULL,
+PRIMARY KEY (id_cargo))
+ENGINE=InnoDB;
+
+CREATE TABLE tipo_posgrado(
+id_tipo_posgrado INT NOT NULL AUTO_INCREMENT,
+descripcion_tipo_posgrado VARCHAR(100) NOT NULL,
+activo_tipo_posgrado INT NOT NULL,
+PRIMARY KEY (id_tipo_posgrado))
+ENGINE=InnoDB;
+
+CREATE TABLE situacion(
+id_situacion INT NOT NULL AUTO_INCREMENT,
+descripcion_situacion VARCHAR(100) NOT NULL,
+activo_situacion INT NOT NULL,
+PRIMARY KEY (id_situacion))
+ENGINE=InnoDB;
+
+CREATE TABLE area_conocimiento(
+id_area_conocimiento INT NOT NULL AUTO_INCREMENT,
+descripcion_area_conocimiento VARCHAR(100) NOT NULL,
+activo_area_conocimiento INT NOT NULL,
+PRIMARY KEY (id_area_conocimiento))
+ENGINE=InnoDB;
+
+CREATE TABLE idioma(
+id_idioma INT NOT NULL AUTO_INCREMENT,
+descripcion_idioma VARCHAR(100) NOT NULL,
+activo_idioma INT NOT NULL,
+PRIMARY KEY (id_idioma))
+ENGINE=InnoDB;
+
+CREATE TABLE industria(
+id_industria INT NOT NULL AUTO_INCREMENT,
+descripcion_industria VARCHAR(100) NOT NULL,
+activo_industria INT NOT NULL,
+PRIMARY KEY (id_industria))
+ENGINE=InnoDB;
+
+CREATE TABLE tipo_oferta(
+id_tipo_oferta INT NOT NULL AUTO_INCREMENT,
+descripcion_tipo_oferta VARCHAR(100) NOT NULL,
+activo_tipo_oferta INT NOT NULL,
+PRIMARY KEY (id_tipo_oferta))
+ENGINE=InnoDB;
+
+
+CREATE TABLE tipo_educacion(
+id_tipo_educacion INT NOT NULL AUTO_INCREMENT,
+descripcion_tipo_educacion VARCHAR(100) NOT NULL,
+activo_tipo_educacion INT NOT NULL,
+PRIMARY KEY (id_tipo_educacion))
+ENGINE=InnoDB;
+
+CREATE TABLE region(
+id_region INT NOT NULL,
+descripcion_region  VARCHAR(100) NOT NULL,
+id_region_pais INT NOT NULL,
+activo_region INT NOT NULL,
+PRIMARY KEY (id_region))
+ENGINE=InnoDB;
+
+CREATE TABLE nivel(
+id_nivel INT NOT NULL AUTO_INCREMENT,
+descripcion_nivel  VARCHAR(100) NOT NULL,
+activo_nivel INT NOT NULL,
+PRIMARY KEY (id_nivel))
+ENGINE=InnoDB;
+
+CREATE TABLE provincia(
+id_provincia INT NOT NULL,
+descripcion_provincia  VARCHAR(100) NOT NULL,
+id_region_provincia INT NOT NULL,
+activo_provincia INT NOT NULL,
+PRIMARY KEY (id_provincia))
+ENGINE=InnoDB;
+
+CREATE TABLE comuna(
+id_comuna INT NOT NULL,
+descripcion_comuna  VARCHAR(100) NOT NULL,
+id_provincia_comuna INT NOT NULL,
+activo_comuna INT NOT NULL,
+PRIMARY KEY (id_comuna))
+ENGINE=InnoDB;
+
+CREATE TABLE empresa(
+rut_empresa INT NOT NULL AUTO_INCREMENT,
+nombre_empresa  VARCHAR(100) NOT NULL,
+telefono_empresa  INT NOT NULL,
+direccion_empresa  VARCHAR(100) NOT NULL,
+correo_empresa  VARCHAR(100) NOT NULL,
+id_comuna INT NOT NULL,
+PRIMARY KEY (id_comuna))
+ENGINE=InnoDB;
+
+ALTER TABLE `empresa`
+ADD CONSTRAINT `ref_comuna`
+FOREIGN KEY (`id_comuna_empresa`)
+REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE oferta_laboral(
+id_oferta_laboral INT NOT NULL AUTO_INCREMENT,
+descripcion_oferta_laboral  VARCHAR(100) NOT NULL,
+sueldo_oferta_laboral INT NOT NULL,
+direccion_oferta_laboral  VARCHAR(100) NOT NULL,
+jornada_oferta_laboral VARCHAR(100) NOT NULL,
+cupos_oferta_laboral INT NOT NULL,
+experiencia_oferta_laboral INT NOT NULL,
+estado_inclusivo_oferta_laboral INT NOT NULL,
+id_cargo_oferta_laboral  INT NOT NULL,
+id_tipo_oferta_laboral  INT NOT NULL,
+correo_empresa  VARCHAR(100) NOT NULL,
+id_comuna INT NOT NULL,
+PRIMARY KEY (id_oferta_laboral))
+ENGINE=InnoDB;
+
+ALTER TABLE `oferta_laboral`
+ADD CONSTRAINT `ref_cargo`
+FOREIGN KEY (`id_cargo_oferta_laboral`)
+REFERENCES `cargo`(`id_cargo`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `oferta_laboral`
+ADD CONSTRAINT `ref_tipo_oferta`
+FOREIGN KEY (`id_tipo_oferta_laboral`)
+REFERENCES `tipo_oferta`(`id_tipo_oferta`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE visitante(
+run_visitante INT NOT NULL,
+dv_visitante VARCHAR(1) NOT NULL,
+nombres_visitante VARCHAR(20) NOT NULL,
+id_genero_visitante INT NOT NULL,
+id_estado_civil_visitante INT NOT NULL,
+appaterno_visitante VARCHAR(20) NOT NULL,
+apmaterno_visitante VARCHAR(20) NOT NULL,
+fecha_nacimiento_visitante DATE NOT NULL,
+correo_visitante VARCHAR(50) NOT NULL,
+fono_contacto_visitante INT NOT NULL,
+direccion_visitante VARCHAR(50) NOT NULL,
+id_region_visitante INT NOT NULL,
+id_provincia_visitante INT NOT NULL,
+id_comuna_visitante INT NOT NULL,
+PRIMARY KEY (run_visitante))
+ENGINE=InnoDB;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_genero`
+FOREIGN KEY (`id_genero_visitante`)
+REFERENCES `genero`(`id_genero`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_estado_civil`
+FOREIGN KEY (`id_estado_civil_visitante`)
+REFERENCES `estado_civil`(`id_estado_civil`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_comuna`
+FOREIGN KEY (`id_comuna_visitante`)
+REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_provincia`
+FOREIGN KEY (`id_comuna_visitante`)
+REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_comuna`
+FOREIGN KEY (`id_comuna_visitante`)
+REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `visitante`
+ADD CONSTRAINT `ref_region`
+FOREIGN KEY (`id_region_visitante`)
+REFERENCES `region`(`id_region`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE postulacion(
+id_postulacion INT NOT NULL AUTO_INCREMENT,
+id_oferta_postulacion  INT NOT NULL,
+id_visitante_postulacion  INT NOT NULL,
+fecha DATE NOT NULL,
+PRIMARY KEY (id_postulacion))
+ENGINE=InnoDB;
+
+ALTER TABLE `postulacion`
+ADD CONSTRAINT `ref_postulacion`
+FOREIGN KEY (`id_oferta_postulacion`)
+REFERENCES `oferta_laboral`(`id_oferta_laboral`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `postulacion`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_postulacion`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE exp_laboral(
+id_exp_laboral INT NOT NULL,
+descripcion_exp_laboral  VARCHAR(1100) NOT NULL,
+id_cargo_exp_laboral INT NOT NULL,
+id_visita_exp_laboral INT NOT NULL,
+PRIMARY KEY (id_exp_laboral))
+ENGINE=InnoDB;
+
+ALTER TABLE `exp_laboral`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_exp_laboral`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `exp_laboral`
+ADD CONSTRAINT `ref_cargo`
+FOREIGN KEY (`id_cargo_exp_laboral`)
+REFERENCES `cargo`(`id_cargo`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE educacion_escolar(
+id_educacion_escolar INT NOT NULL,
+institucion_educacion_escolar VARCHAR(100) NOT NULL,
+anio_inicio_educacion_escolar DATE NOT NULL,
+anio_termino_educacion_escolar DATE NOT NULL,
+id_comuna_educacion_escolar INT NOT NULL,
+id_region_educacion_escolar INT NOT NULL,
+id_visitante_educacion_escolar INT NOT NULL,
+PRIMARY KEY (id_educacion_escolar))
+ENGINE=InnoDB;
+
+ALTER TABLE `educacion_escolar`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_educacion_escolar`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `educacion_escolar`
+ADD CONSTRAINT `ref_comuna`
+FOREIGN KEY (`id_comuna_educacion_escolar`)
+REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `educacion_escolar`
+ADD CONSTRAINT `ref_region`
+FOREIGN KEY (`id_region_educacion_escolar`)
+REFERENCES `region`(`id_region`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE postgrado(
+id_postgrado INT NOT NULL,
+institucion_postgrado VARCHAR(100) NOT NULL,
+descripcion_postgrado INT NOT NULL,
+anio_inicio_postgrado DATE NOT NULL,
+anio_termino_postgrado DATE NOT NULL,
+id_pais_postgrado INT NOT NULL,
+id_visitante_educacion_escolar INT NOT NULL,
+id_situacion_postgrado INT NOT NULL,
+PRIMARY KEY (id_postgrado))
+ENGINE=InnoDB;
+
+ALTER TABLE `postgrado`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_postgrado`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `postgrado`
+ADD CONSTRAINT `ref_pais`
+FOREIGN KEY (`id_pais_postgrado`)
+REFERENCES `pais`(`id_pais`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `postgrado`
+ADD CONSTRAINT `ref_situacion`
+FOREIGN KEY (`id_situacion_postgrado`)
+REFERENCES `situacion`(`id_situacion`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+CREATE TABLE educ_superior(
+id_educ_superior INT NOT NULL,
+institucion_educ_superior VARCHAR(100) NOT NULL,
+descripcion_educ_superior VARCHAR(100) NOT NULL,
+anio_inicio_postgrado DATE NOT NULL,
+anio_termino_postgrado DATE NOT NULL,
+id_visitante_educ_superior INT NOT NULL,
+id_situacion_educ_superior INT NOT NULL,
+id_area_conocimiento_educ_superior INT NOT NULL,
+PRIMARY KEY (id_educ_superior))
+ENGINE=InnoDB;
+
+ALTER TABLE `educ_superior`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_educ_superior`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `educ_superior`
+ADD CONSTRAINT `ref_situacion`
+FOREIGN KEY (`id_situacion_educ_superior`)
+REFERENCES `situacion`(`id_situacion`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `educ_superior`
+ADD CONSTRAINT `ref_situacion`
+FOREIGN KEY (`id_area_conocimiento_educ_superior`)
+REFERENCES `area_conocimiento`(`id_area_conocimiento`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE educ_idioma(
+id_educ_idioma INT NOT NULL,
+descripcion_educ_idioma VARCHAR(100) NOT NULL,
+id_idioma_educ_idioma INT NOT NULL,
+id_nivel_educ_idioma INT NOT NULL,
+id_visitante_educ_superior INT NOT NULL,
+PRIMARY KEY (id_educ_idioma))
+ENGINE=InnoDB;
+
+ALTER TABLE `educ_idioma`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_educ_idioma`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `idioma`
+ADD CONSTRAINT `ref_idioma`
+FOREIGN KEY (`id_idioma_educ_idioma`)
+REFERENCES `idioma`(`id_idioma`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `nivel`
+ADD CONSTRAINT `ref_nivel`
+FOREIGN KEY (`id_nivel_educ_idioma`)
+REFERENCES `nivel`(`id_nivel`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE habilidad(
+id_habilidad INT NOT NULL,
+descripcion_habilidad VARCHAR(100) NOT NULL,
+id_nivel_habilidad INT NOT NULL,
+id_visitante_habilidad INT NOT NULL,
+PRIMARY KEY (id_habilidad))
+ENGINE=InnoDB;
+
+ALTER TABLE `habilidad`
+ADD CONSTRAINT `ref_nivel`
+FOREIGN KEY (`id_nivel_habilidad`)
+REFERENCES `nivel`(`id_nivel`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `habilidad`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_habilidad`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+CREATE TABLE adicional(
+id_adicional INT NOT NULL,
+descripcion_adicional VARCHAR(100) NOT NULL,
+anio_inicio_adicional DATE NOT NULL,
+anio_termino_adicional DATE NOT NULL,
+id_visitante_adicional INT NOT NULL,
+PRIMARY KEY (id_adicional))
+ENGINE=InnoDB;
+
+ALTER TABLE `adicional`
+ADD CONSTRAINT `ref_visitante`
+FOREIGN KEY (`id_visitante_adicional`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+INSERT INTO REGION VALUES
+(1000,'Region de Tarapaca',1),
+(2000,'Region de Antofagasta',1),
+(3000,'Region de Atacama',1),
+(4000,'Region de Coquimbo',1),
+(5000,'Region de Valparaiso',1),
+(6000,'Region del libertador General Bernardo Ohiggins',1),
+(7000,'Region del Maule',1),
+(8000,'Region del Bio-Bio',1),
+(9000,'Region de la Araucania',1),
+(10000,'Region de los Lagos',1),
+(11000,'Region de Aysen del General Carlos Ibanez del Campo',1),
+(12000,'Region de Magallanes y la Antartica Chilena',1),
+(13000,'Region Metropolitana de Santiago',1),
+(14000,'Region de los Rios',1),
+(15000,'Region de Arica y Parinacota',1);
+
+INSERT INTO PROVINCIA VALUES
+(1100,'Iquique',1000,1),
+(2100,'Antofagasta',2000,1),
+(2200,'El Loa',2000,1),
+(2300,'Tocopilla',2000,1),
+(3100,'Copiapo',3000,1),
+(3200,'Chanaral',3000,1),
+(3300,'Huasco',3000,1),
+(4100,'Elqui',4000,1),
+(4200,'Choapa',4000,1),
+(4300,'Limari',4000,1),
+(5100,'Valparaiso',5000,1),
+(5200,'Isla de Pascua',5000,1),
+(5300,'Los Andes',5000,1),
+(5400,'Petorca',5000,1),
+(5500,'Quillota',5000,1),
+(5600,'San Antonio',5000,1),
+(5700,'San Felipe de Aconcagua',5000,1),
+(6100,'Cachapoal',6000,1),
+(6200,'Cardenal Caro',6000,1),
+(6300,'Colchagua',6000,1),
+(7100,'Talca',7000,1),
+(7200,'Cauquenes',7000,1),
+(7300,'Curico',7000,1),
+(7400,'Linares',7000,1),
+(8100,'Concepcion',8000,1),
+(8200,'Arauco',8000,1),
+(8300,'Biobio',8000,1),
+(8400,'Nuble',8000,1),
+(9100,'Cautin',9000,1),
+(9200,'Malleco',9000,1),
+(10100,'Llanquihue',10000,1),
+(10200,'Chiloe',10000,1),
+(10300,'Osorno',10000,1),
+(10400,'Palena',10000,1),
+(11100,'Coihaique',11000,1),
+(11200,'Aisen',11000,1),
+(11300,'Capitan Prat',11000,1),
+(11400,'General Carrera',11000,1),
+(12100,'Magallanes',12000,1),
+(12200,'Antartica Chilena',12000,1),
+(12300,'Tierra del Fuego',12000,1),
+(12400,'Ultima Esperanza',12000,1),
+(13100,'Santiago',13000,1),
+(13200,'Cordillera',13000,1),
+(13300,'Chacabuco',13000,1),
+(13400,'Maipo',13000,1),
+(13500,'Melipilla',13000,1),
+(13600,'Talagante',13000,1),
+(14100,'Valdivia',14000,1),
+(14200,'Ranco',14000,1),
+(15100,'Arica',15000,1),
+(15200,'Parinacota',15000,1);
+
+INSERT INTO COMUNA VALUES
+(1101,'Iquique',1100,1),
+(1102,'Camina',1100,1),
+(1103,'Colchane',1100,1),
+(1104,'Huara',1100,1),
+(1105,'Pica',1100,1),
+(1106,'Pozo Almonte',1100,1),
+(2101,'Antofagasta',2100,1),
+(2102,'Mejillones',2100,1),
+(2103,'Sierra Gorda',2100,1),
+(2104,'Taltal',2100,1),
+(2201,'Calama',2200,1),
+(2202,'Ollague',2200,1),
+(2203,'San Pedro de Atacama',2200,1),
+(2301,'Tocopilla',2300,1),
+(2302,'Maria Elena',2300,1),
+(3101,'Copiapo',3100,1),
+(3102,'Caldera',3100,1),
+(3103,'Tierra Amarilla',3100,1),
+(3201,'Chanaral',3200,1),
+(3202,'Diego de Almagro',3200,1),
+(3301,'Vallenar',3300,1),
+(3302,'Alto del Carmen',3300,1),
+(3303,'Freirina',3300,1),
+(3304,'Huasco',3300,1),
+(4101,'La Serena',4100,1),
+(4102,'Coquimbo',4100,1),
+(4103,'Andacollo',4100,1),
+(4104,'La Higuera',4100,1),
+(4105,'Paiguano',4100,1),
+(4106,'Vicuna',4100,1),
+(4201,'Illapel',4200,1),
+(4202,'Canela',4200,1),
+(4203,'Los Vilos',4200,1),
+(4204,'Salamanca',4200,1),
+(4301,'Ovalle',4300,1),
+(4302,'Combarbala',4300,1),
+(4303,'Monte Patria',4300,1),
+(4304,'Punitaqui',4300,1),
+(4305,'Rio Hurtado',4300,1),
+(5101,'Valparaiso',5100,1),
+(5102,'Casablanca',5100,1),
+(5103,'Concon',5100,1),
+(5104,'Juan Fernandez',5100,1),
+(5105,'Puchuncavi',5100,1),
+(5106,'Quilpue',5100,1),
+(5107,'Quintero',5100,1),
+(5108,'Villa Alemana',5100,1),
+(5109,'Vina del Mar',5100,1),
+(5201,'Isla de Pascua',5200,1),
+(5301,'Los Andes',5300,1),
+(5302,'Calle Larga',5300,1),
+(5303,'Rinconada',5300,1),
+(5304,'San Esteban',5300,1),
+(5401,'La Ligua',5400,1),
+(5402,'Cabildo',5400,1),
+(5403,'Papudo',5400,1),
+(5404,'Petorca',5400,1),
+(5405,'Zapallar',5400,1),
+(5501,'Quillota',5500,1),
+(5502,'Calera',5500,1),
+(5503,'Hijuelas',5500,1),
+(5504,'La Cruz',5500,1),
+(5505,'Limache',5500,1),
+(5506,'Nogales',5500,1),
+(5507,'Olmue',5500,1),
+(5601,'San Antonio',5600,1),
+(5602,'Algarrobo',5600,1),
+(5603,'Cartagena',5600,1),
+(5604,'El Quisco',5600,1),
+(5605,'El Tabo',5600,1),
+(5606,'Santo Domingo',5600,1),
+(5701,'San Felipe',5700,1),
+(5702,'Catemu',5700,1),
+(5703,'Llaillay',5700,1),
+(5704,'Panquehue',5700,1),
+(5705,'Putaendo',5700,1),
+(5706,'Santa Maria',5700,1),
+(6101,'Rancagua',6100,1),
+(6102,'Codegua',6100,1),
+(6103,'Coinco',6100,1),
+(6104,'Coltauco',6100,1),
+(6105,'Donihue',6100,1),
+(6106,'Graneros',6100,1),
+(6107,'Las Cabras',6100,1),
+(6108,'Machali',6100,1),
+(6109,'Malloa',6100,1),
+(6110,'Mostazal',6100,1),
+(6111,'Olivar',6100,1),
+(6112,'Peumo',6100,1),
+(6113,'Pichidegua',6100,1),
+(6114,'Quinta de Tilcoco',6100,1),
+(6115,'Rengo',6100,1),
+(6116,'Requinoa',6100,1),
+(6117,'San Vicente',6100,1),
+(6201,'Pichilemu',6200,1),
+(6202,'La Estrella',6200,1),
+(6203,'Litueche',6200,1),
+(6204,'Marchihue',6200,1),
+(6205,'Navidad',6200,1),
+(6206,'Paredones',6200,1),
+(6301,'San Fernando',6300,1),
+(6302,'Chepica',6300,1),
+(6303,'Chimbarongo',6300,1),
+(6304,'Lolol',6300,1),
+(6305,'Nancagua',6300,1),
+(6306,'Palmilla',6300,1),
+(6307,'Peralillo',6300,1),
+(6308,'Placilla',6300,1),
+(6309,'Pumanque',6300,1),
+(6310,'Santa Cruz',6300,1),
+(7101,'Talca',7100,1),
+(7102,'Constitucion',7100,1),
+(7103,'Curepto',7100,1),
+(7104,'Empedrado',7100,1),
+(7105,'Maule',7100,1),
+(7106,'Pelarco',7100,1),
+(7107,'Pencahue',7100,1),
+(7108,'Rio Claro',7100,1),
+(7109,'San Clemente',7100,1),
+(7110,'San Rafael',7100,1),
+(7201,'Cauquenes',7200,1),
+(7202,'Chanco',7200,1),
+(7203,'Pelluhue',7200,1),
+(7301,'Curico',7300,1),
+(7302,'Hualane',7300,1),
+(7303,'Licanten',7300,1),
+(7304,'Molina',7300,1),
+(7305,'Rauco',7300,1),
+(7306,'Romeral',7300,1),
+(7307,'Sagrada Familia',7300,1),
+(7308,'Teno',7300,1),
+(7309,'Vichuquen',7300,1),
+(7401,'Linares',7400,1),
+(7402,'Colbun',7400,1),
+(7403,'Longavi',7400,1),
+(7404,'Parral',7400,1),
+(7405,'Retiro',7400,1),
+(7406,'San Javier',7400,1),
+(7407,'Villa Alegre',7400,1),
+(7408,'Yerbas Buenas',7400,1),
+(8101,'Concepcion',8100,1),
+(8102,'Coronel',8100,1),
+(8103,'Chiguayante',8100,1),
+(8104,'Florida',8100,1),
+(8105,'Hualqui',8100,1),
+(8106,'Lota',8100,1),
+(8107,'Penco',8100,1),
+(8108,'San Pedro de La Paz',8100,1),
+(8109,'Santa Juana',8100,1),
+(8110,'Talcahuano',8100,1),
+(8111,'Tome',8100,1),
+(8201,'Lebu',8200,1),
+(8202,'Arauco',8200,1),
+(8203,'Canete',8200,1),
+(8204,'Contulmo',8200,1),
+(8205,'Curanilahue',8200,1),
+(8206,'Los Alamos',8200,1),
+(8207,'Tirua',8200,1),
+(8301,'Los Angeles',8300,1),
+(8302,'Antuco',8300,1),
+(8303,'Cabrero',8300,1),
+(8304,'Laja',8300,1),
+(8305,'Mulchen',8300,1),
+(8306,'Nacimiento',8300,1),
+(8307,'Negrete',8300,1),
+(8308,'Quilaco',8300,1),
+(8309,'Quilleco',8300,1),
+(8310,'San Rosendo',8300,1),
+(8311,'Santa Barbara',8300,1),
+(8312,'Tucapel',8300,1),
+(8313,'Yumbel',8300,1),
+(8401,'Chillan',8400,1),
+(8402,'Bulnes',8400),
+(8403,'Cobquecura',8400,1),
+(8404,'Coelemu',8400,1),
+(8405,'Coihueco',8400,1),
+(8406,'Chillan Viejo',8400,1),
+(8407,'El Carmen',8400,1),
+(8408,'Ninhue',8400,1),
+(8409,'Niquen',8400,1),
+(8410,'Pemuco',8400,1),
+(8411,'Pinto',8400,1),
+(8412,'Portezuelo',8400,1),
+(8413,'Quillon',8400,1),
+(8414,'Quirihue',8400,1),
+(8415,'Ranquil',8400,1),
+(8416,'San Carlos',8400,1),
+(8417,'San Fabian',8400,1),
+(8418,'San Ignacio',8400,1),
+(8419,'San Nicolas',8400,1),
+(8420,'Treguaco',8400,1),
+(8421,'Yungay',8400,1),
+(9101,'Temuco',9100,1),
+(9102,'Carahue',9100,1),
+(9103,'Cunco',9100,1),
+(9104,'Curarrehue',9100,1),
+(9105,'Freire',9100,1),
+(9106,'Galvarino',9100,1),
+(9107,'Gorbea',9100,1),
+(9108,'Lautaro',9100,1),
+(9109,'Loncoche',9100,1),
+(9110,'Melipeuco',9100,1),
+(9111,'Nueva Imperial',9100,1),
+(9112,'Padre las Casas',9100,1),
+(9113,'Perquenco',9100,1),
+(9114,'Pitrufquen',9100,1),
+(9115,'Pucon',9100,1),
+(9116,'Saavedra',9100,1),
+(9117,'Teodoro Schmidt',9100,1),
+(9118,'Tolten',9100,1),
+(9119,'Vilcun',9100,1),
+(9120,'Villarrica',9100,1),
+(9201,'Angol',9200,1),
+(9202,'Collipulli',9200,1),
+(9203,'Curacautin',9200,1),
+(9204,'Ercilla',9200,1),
+(9205,'Lonquimay',9200,1),
+(9206,'Los Sauces',9200,1),
+(9207,'Lumaco',9200,1),
+(9208,'Puren',9200,1),
+(9209,'Renaico',9200,1),
+(9210,'Traiguen',9200,1),
+(9211,'Victoria',9200,1),
+(10101,'Puerto Montt',10100,1),
+(10102,'Calbuco',10100,1),
+(10103,'Cochamo',10100,1),
+(10104,'Fresia',10100,1),
+(10105,'Frutillar',10100,1),
+(10106,'Los Muermos',10100,1),
+(10107,'Llanquihue',10100,1),
+(10108,'Maullin',10100,1),
+(10109,'Puerto Varas',10100,1),
+(10201,'Castro',13100,1),
+(10202,'Ancud',13100,1),
+(10203,'Chonchi',13100,1),
+(10204,'Curaco de Velez',13100,1),
+(10205,'Dalcahue',13100,1),
+(10206,'Puqueldon',13100,1),
+(10207,'Queilen',13100,1),
+(10208,'Quellon',13100,1),
+(10209,'Quemchi',13100,1),
+(10210,'Quinchao',13100,1),
+(10301,'Osorno',10300,1),
+(10302,'Puerto Octay',10300,1),
+(10303,'Purranque',10300,1),
+(10304,'Puyehue',10300,1),
+(10305,'Rio Negro',10300,1),
+(10306,'San Juan de La Costa',10300,1),
+(10307,'San Pablo',10300,1),
+(10401,'Chaiten',10400,1),
+(10402,'Futaleufu',10400,1),
+(10403,'Hualaihue',10400,1),
+(10404,'Palena',10400,1),
+(11101,'Coihaique',11100,1),
+(11102,'Lago Verde',11100,1),
+(11201,'Aisen',11200,1),
+(11202,'Cisne',11200,1),
+(11203,'Guaitecas',11200,1),
+(11301,'Cochrane',11300,1),
+(11302,'OHiggins',11300,1),
+(11303,'Tortel',11300,1),
+(11401,'Chile Chico',11400,1),
+(11402,'Rio Ibanez',11400,1),
+(12101,'Punta Arenas',12100,1),
+(12102,'Laguna Blanca',12100,1),
+(12103,'Rio Verde',12100,1),
+(12104,'San Gregorio',12100,1),
+(12201,'Cabo de Horno',12200,1),
+(12202,'Antartica',12200,1),
+(12301,'Porvenir',12300,1),
+(12302,'Primavera',12300,1),
+(12303,'Timaukel',12300,1),
+(12401,'Natales',12400,1),
+(12402,'Torres del Paine',12400,1),
+(13101,'Santiago',13100,1),
+(13102,'Cerrillos',13100,1),
+(13103,'Cerro Navia',13100,1),
+(13104,'Conchali',13100,1),
+(13105,'El Bosque',13100,1),
+(13106,'Estacion Central',13100,1),
+(13107,'Huechuraba',13100,1),
+(13108,'Independencia',13100,1),
+(13109,'La Cisterna',13100,1),
+(13110,'La Florida',13100,1),
+(13111,'La Granja',13100,1),
+(13112,'La Pintana',13100,1),
+(13113,'La Reina',13100,1),
+(13114,'Las Condes',13100,1),
+(13115,'Lo Barnechea',13100,1),
+(13116,'Lo Espejo',13100,1),
+(13117,'Lo Prado',13100,1),
+(13118,'Macul',13100,1),
+(13119,'Maipu',13100,1),
+(13120,'Nunoa',13100,1),
+(13121,'Pedro Aguirre Cerda',13100,1),
+(13122,'Penalolen',13100,1),
+(13123,'Providencia',13100,1),
+(13124,'Pudahuel',13100,1),
+(13125,'Quilicura',13100,1),
+(13126,'Quinta Normal',13100,1),
+(13127,'Recoleta',13100,1),
+(13128,'Renca',13100,1),
+(13129,'San Joaquin',13100,1),
+(13130,'San Miguel',13100,1),
+(13131,'San Ramon',13100,1),
+(13132,'Vitacura',13100,1),
+(13201,'Puente Alto',13200,1),
+(13202,'Pirque',13200,1),
+(13203,'San Jose de Maipo',13200,1),
+(13301,'Colina',13300,1),
+(13302,'Lampa',13300,1),
+(13303,'Tiltil',13300,1),
+(13401,'San Bernardo',13400,1),
+(13402,'Buin',13400,1),
+(13403,'Calera de Tango',13400,1),
+(13404,'Paine',13400,1),
+(13501,'Melipilla',13500,1),
+(13502,'Alhue',13500,1),
+(13503,'Curacavi',13500,1),
+(13504,'Maria Pinto',13500,1),
+(13505,'San Pedro',13500,1),
+(13601,'Talagante',13600,1),
+(13602,'El Monte',13600,1),
+(13603,'Isla de Maipo',13600,1),
+(13604,'Padre Hurtado',13600,1),
+(13605,'Penaflor',13600,1),
+(14101,'Valdivia',14100,1),
+(14102,'Corral',14100,1),
+(14103,'Futrono',14100,1),
+(14104,'La Union',14100,1),
+(14105,'Lago Ranco',14100,1),
+(14106,'Lanco',14100,1),
+(14107,'Los Lagos',14100,1),
+(14108,'Mafil',14100,1),
+(14109,'Mariquina',14100,1),
+(14110,'Paillaco',14100,1),
+(14111,'Panguipulli',14100,1),
+(14112,'Rio Bueno',14100,1),
+(14201,'La Union',14200,1),
+(14202,'Futrono',14200,1),
+(14203,'Lago Ranco',14200,1),
+(14204,'Rio Bueno',14200,1),
+(15101,'Arica',15100,1),
+(15102,'Camarones',15100,1),
+(15201,'Putre',15200,1),
+(15202,'General Lagos',15200,1);
