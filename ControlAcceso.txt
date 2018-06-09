@@ -1,12 +1,12 @@
-CREATE DATABASE CONTROLDEACCESO;
+CREATE DATABASE CONTROLDEACCESOBD;
 
-USE CONTROLDEACCESO;
+USE CONTROLDEACCESOBD;
 
 CREATE TABLE pais(
 id_pais INT NOT NULL AUTO_INCREMENT,
 descripcion_pais VARCHAR(100) NOT NULL,
 activo_pais INT NOT NULL,
-PRIMARY KEY (id_region))
+PRIMARY KEY (id_pais))
 ENGINE=InnoDB;
 
 CREATE TABLE genero(
@@ -30,11 +30,11 @@ activo_cargo INT NOT NULL,
 PRIMARY KEY (id_cargo))
 ENGINE=InnoDB;
 
-CREATE TABLE tipo_posgrado(
-id_tipo_posgrado INT NOT NULL AUTO_INCREMENT,
-descripcion_tipo_posgrado VARCHAR(100) NOT NULL,
-activo_tipo_posgrado INT NOT NULL,
-PRIMARY KEY (id_tipo_posgrado))
+CREATE TABLE tipo_postgrado(
+id_tipo_postgrado INT NOT NULL AUTO_INCREMENT,
+descripcion_tipo_postgrado VARCHAR(100) NOT NULL,
+activo_tipo_postgrado INT NOT NULL,
+PRIMARY KEY (id_tipo_postgrado))
 ENGINE=InnoDB;
 
 CREATE TABLE situacion(
@@ -83,7 +83,6 @@ ENGINE=InnoDB;
 CREATE TABLE region(
 id_region INT NOT NULL,
 descripcion_region  VARCHAR(100) NOT NULL,
-id_region_pais INT NOT NULL,
 activo_region INT NOT NULL,
 PRIMARY KEY (id_region))
 ENGINE=InnoDB;
@@ -103,6 +102,13 @@ activo_provincia INT NOT NULL,
 PRIMARY KEY (id_provincia))
 ENGINE=InnoDB;
 
+ALTER TABLE `provincia`
+ADD CONSTRAINT `ref_region_prov`
+FOREIGN KEY (`id_region_provincia`)
+REFERENCES `region`(`id_region`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
 CREATE TABLE comuna(
 id_comuna INT NOT NULL,
 descripcion_comuna  VARCHAR(100) NOT NULL,
@@ -111,20 +117,35 @@ activo_comuna INT NOT NULL,
 PRIMARY KEY (id_comuna))
 ENGINE=InnoDB;
 
+ALTER TABLE `comuna`
+ADD CONSTRAINT `ref_provincia_comu`
+FOREIGN KEY (`id_provincia_comuna`)
+REFERENCES `provincia`(`id_provincia`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
 CREATE TABLE empresa(
 rut_empresa INT NOT NULL AUTO_INCREMENT,
 nombre_empresa  VARCHAR(100) NOT NULL,
 telefono_empresa  INT NOT NULL,
 direccion_empresa  VARCHAR(100) NOT NULL,
 correo_empresa  VARCHAR(100) NOT NULL,
-id_comuna INT NOT NULL,
-PRIMARY KEY (id_comuna))
+id_comuna_empresa INT NOT NULL,
+id_industria_empresa INT NOT NULL,
+PRIMARY KEY (rut_empresa))
 ENGINE=InnoDB;
 
 ALTER TABLE `empresa`
-ADD CONSTRAINT `ref_comuna`
+ADD CONSTRAINT `ref_comuna_visi`
 FOREIGN KEY (`id_comuna_empresa`)
 REFERENCES `comuna`(`id_comuna`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `empresa`
+ADD CONSTRAINT `ref_industria_emp`
+FOREIGN KEY (`id_industria_empresa`)
+REFERENCES `industria`(`id_industria`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
@@ -145,7 +166,7 @@ PRIMARY KEY (id_oferta_laboral))
 ENGINE=InnoDB;
 
 ALTER TABLE `oferta_laboral`
-ADD CONSTRAINT `ref_cargo`
+ADD CONSTRAINT `ref_cargo_of`
 FOREIGN KEY (`id_cargo_oferta_laboral`)
 REFERENCES `cargo`(`id_cargo`)
 ON DELETE NO ACTION
@@ -177,42 +198,35 @@ PRIMARY KEY (run_visitante))
 ENGINE=InnoDB;
 
 ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_genero`
+ADD CONSTRAINT `ref_genero_vis`
 FOREIGN KEY (`id_genero_visitante`)
 REFERENCES `genero`(`id_genero`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_estado_civil`
+ADD CONSTRAINT `ref_estado_civil_vis`
 FOREIGN KEY (`id_estado_civil_visitante`)
 REFERENCES `estado_civil`(`id_estado_civil`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_comuna`
+ADD CONSTRAINT `ref_comuna_vis`
 FOREIGN KEY (`id_comuna_visitante`)
 REFERENCES `comuna`(`id_comuna`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_provincia`
+ADD CONSTRAINT `ref_provincia_vis`
 FOREIGN KEY (`id_comuna_visitante`)
 REFERENCES `comuna`(`id_comuna`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_comuna`
-FOREIGN KEY (`id_comuna_visitante`)
-REFERENCES `comuna`(`id_comuna`)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
-ALTER TABLE `visitante`
-ADD CONSTRAINT `ref_region`
+ADD CONSTRAINT `ref_region_vis`
 FOREIGN KEY (`id_region_visitante`)
 REFERENCES `region`(`id_region`)
 ON DELETE NO ACTION
@@ -227,14 +241,14 @@ PRIMARY KEY (id_postulacion))
 ENGINE=InnoDB;
 
 ALTER TABLE `postulacion`
-ADD CONSTRAINT `ref_postulacion`
+ADD CONSTRAINT `ref_postulacion_of`
 FOREIGN KEY (`id_oferta_postulacion`)
 REFERENCES `oferta_laboral`(`id_oferta_laboral`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `postulacion`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_pos`
 FOREIGN KEY (`id_visitante_postulacion`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
@@ -244,19 +258,19 @@ CREATE TABLE exp_laboral(
 id_exp_laboral INT NOT NULL,
 descripcion_exp_laboral  VARCHAR(1100) NOT NULL,
 id_cargo_exp_laboral INT NOT NULL,
-id_visita_exp_laboral INT NOT NULL,
+id_visitante_exp_laboral INT NOT NULL,
 PRIMARY KEY (id_exp_laboral))
 ENGINE=InnoDB;
 
 ALTER TABLE `exp_laboral`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_exp`
 FOREIGN KEY (`id_visitante_exp_laboral`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `exp_laboral`
-ADD CONSTRAINT `ref_cargo`
+ADD CONSTRAINT `ref_cargo_exp`
 FOREIGN KEY (`id_cargo_exp_laboral`)
 REFERENCES `cargo`(`id_cargo`)
 ON DELETE NO ACTION
@@ -267,6 +281,7 @@ id_educacion_escolar INT NOT NULL,
 institucion_educacion_escolar VARCHAR(100) NOT NULL,
 anio_inicio_educacion_escolar DATE NOT NULL,
 anio_termino_educacion_escolar DATE NOT NULL,
+id_tipo_educacion_escolar INT NOT NULL,
 id_comuna_educacion_escolar INT NOT NULL,
 id_region_educacion_escolar INT NOT NULL,
 id_visitante_educacion_escolar INT NOT NULL,
@@ -274,21 +289,28 @@ PRIMARY KEY (id_educacion_escolar))
 ENGINE=InnoDB;
 
 ALTER TABLE `educacion_escolar`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_tipo_educacion_ed`
+FOREIGN KEY (`id_tipo_educacion_escolar`)
+REFERENCES `tipo_educacion`(`id_tipo_educacion`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `educacion_escolar`
+ADD CONSTRAINT `ref_visitante_ed`
 FOREIGN KEY (`id_visitante_educacion_escolar`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `educacion_escolar`
-ADD CONSTRAINT `ref_comuna`
+ADD CONSTRAINT `ref_comuna_ed`
 FOREIGN KEY (`id_comuna_educacion_escolar`)
 REFERENCES `comuna`(`id_comuna`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `educacion_escolar`
-ADD CONSTRAINT `ref_region`
+ADD CONSTRAINT `ref_region_ed`
 FOREIGN KEY (`id_region_educacion_escolar`)
 REFERENCES `region`(`id_region`)
 ON DELETE NO ACTION
@@ -301,27 +323,35 @@ descripcion_postgrado INT NOT NULL,
 anio_inicio_postgrado DATE NOT NULL,
 anio_termino_postgrado DATE NOT NULL,
 id_pais_postgrado INT NOT NULL,
-id_visitante_educacion_escolar INT NOT NULL,
+id_visitante_postgrado INT NOT NULL,
+id_tipo_postgrado INT NOT NULL,
 id_situacion_postgrado INT NOT NULL,
 PRIMARY KEY (id_postgrado))
 ENGINE=InnoDB;
 
 ALTER TABLE `postgrado`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_post`
 FOREIGN KEY (`id_visitante_postgrado`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `postgrado`
-ADD CONSTRAINT `ref_pais`
+ADD CONSTRAINT `ref_tipo_post`
+FOREIGN KEY (`id_tipo_postgrado`)
+REFERENCES `tipo_postgrado`(`id_tipo_postgrado`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE `postgrado`
+ADD CONSTRAINT `ref_pais_post`
 FOREIGN KEY (`id_pais_postgrado`)
 REFERENCES `pais`(`id_pais`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `postgrado`
-ADD CONSTRAINT `ref_situacion`
+ADD CONSTRAINT `ref_situacion_post`
 FOREIGN KEY (`id_situacion_postgrado`)
 REFERENCES `situacion`(`id_situacion`)
 ON DELETE NO ACTION
@@ -341,21 +371,21 @@ PRIMARY KEY (id_educ_superior))
 ENGINE=InnoDB;
 
 ALTER TABLE `educ_superior`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_educ`
 FOREIGN KEY (`id_visitante_educ_superior`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `educ_superior`
-ADD CONSTRAINT `ref_situacion`
+ADD CONSTRAINT `ref_situacion_educ`
 FOREIGN KEY (`id_situacion_educ_superior`)
 REFERENCES `situacion`(`id_situacion`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `educ_superior`
-ADD CONSTRAINT `ref_situacion`
+ADD CONSTRAINT `ref_area_educ`
 FOREIGN KEY (`id_area_conocimiento_educ_superior`)
 REFERENCES `area_conocimiento`(`id_area_conocimiento`)
 ON DELETE NO ACTION
@@ -365,27 +395,27 @@ CREATE TABLE educ_idioma(
 id_educ_idioma INT NOT NULL,
 descripcion_educ_idioma VARCHAR(100) NOT NULL,
 id_idioma_educ_idioma INT NOT NULL,
+id_visitante_educ_idioma INT NOT NULL,
 id_nivel_educ_idioma INT NOT NULL,
-id_visitante_educ_superior INT NOT NULL,
 PRIMARY KEY (id_educ_idioma))
 ENGINE=InnoDB;
 
 ALTER TABLE `educ_idioma`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_idi`
 FOREIGN KEY (`id_visitante_educ_idioma`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE `idioma`
-ADD CONSTRAINT `ref_idioma`
+ALTER TABLE `educ_idioma`
+ADD CONSTRAINT `ref_idioma_idi`
 FOREIGN KEY (`id_idioma_educ_idioma`)
 REFERENCES `idioma`(`id_idioma`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE `nivel`
-ADD CONSTRAINT `ref_nivel`
+ALTER TABLE `educ_idioma`
+ADD CONSTRAINT `ref_nivel_idi`
 FOREIGN KEY (`id_nivel_educ_idioma`)
 REFERENCES `nivel`(`id_nivel`)
 ON DELETE NO ACTION
@@ -400,14 +430,14 @@ PRIMARY KEY (id_habilidad))
 ENGINE=InnoDB;
 
 ALTER TABLE `habilidad`
-ADD CONSTRAINT `ref_nivel`
+ADD CONSTRAINT `ref_nivel_habi`
 FOREIGN KEY (`id_nivel_habilidad`)
 REFERENCES `nivel`(`id_nivel`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE `habilidad`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_habi`
 FOREIGN KEY (`id_visitante_habilidad`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
@@ -423,11 +453,18 @@ PRIMARY KEY (id_adicional))
 ENGINE=InnoDB;
 
 ALTER TABLE `adicional`
-ADD CONSTRAINT `ref_visitante`
+ADD CONSTRAINT `ref_visitante_adi`
 FOREIGN KEY (`id_visitante_adicional`)
 REFERENCES `visitante`(`run_visitante`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
+
+CREATE TABLE acceso(
+id_acceso INT NOT NULL,
+hora_acceso INT NOT NULL,
+id_visitante_acceso INT NOT NULL,
+PRIMARY KEY (id_acceso))
+ENGINE=InnoDB;
 
 INSERT INTO REGION VALUES
 (1000,'Region de Tarapaca',1),
@@ -673,7 +710,7 @@ INSERT INTO COMUNA VALUES
 (8312,'Tucapel',8300,1),
 (8313,'Yumbel',8300,1),
 (8401,'Chillan',8400,1),
-(8402,'Bulnes',8400),
+(8402,'Bulnes',8400,1),
 (8403,'Cobquecura',8400,1),
 (8404,'Coelemu',8400,1),
 (8405,'Coihueco',8400,1),
@@ -847,3 +884,5 @@ INSERT INTO COMUNA VALUES
 (15102,'Camarones',15100,1),
 (15201,'Putre',15200,1),
 (15202,'General Lagos',15200,1);
+
+
