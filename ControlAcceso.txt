@@ -466,6 +466,14 @@ id_visitante_acceso INT NOT NULL,
 PRIMARY KEY (id_acceso))
 ENGINE=InnoDB;
 
+ALTER TABLE `acceso`
+ADD CONSTRAINT `ref_visitante_acceso`
+FOREIGN KEY (`id_visitante_acceso`)
+REFERENCES `visitante`(`run_visitante`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
 INSERT INTO REGION VALUES
 (1000,'Region de Tarapaca',1),
 (2000,'Region de Antofagasta',1),
