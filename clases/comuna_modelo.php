@@ -26,7 +26,7 @@ class Comuna_modelo
 	{
 		try 
 		{
-			$sql = "SELECT * FROM comuna WHERE id_comuna = ?";
+			$sql = "SELECT * FROM comuna WHERE descripcion_comuna = ?";
 			$stm = $this->getConexion()->getPDO()->prepare($sql);
 			$stm -> execute(array($id_comuna));
 			$r = $stm -> fetch(PDO::FETCH_OBJ);
